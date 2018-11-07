@@ -1,0 +1,79 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin"
+    },
+    {
+      "id": 2,
+      "username": "customer"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "category": "Laptop",
+      "title": "Asus",
+      "description": "노트북 할인",
+      "mainImgUrl": "https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Flaptop1.png?1541557383008",
+      "detailImgUrls": ["https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Flaptop1detail.jpg?1541557620590"]
+    },
+    {
+      "id": 2,
+      "category": "Tablet",
+      "title": "Samsung",
+      "description": "타블릿",
+      "mainImgUrl": "https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2F61UeUwwxEsL._SL1500_.jpg?1541557528476",
+      "detailImgUrls": ["https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Ftablet.jpg?1541557573912"]
+    }
+  ],
+  "options": [
+    {
+      "id": 1,
+      "productId": 1,
+      "title": "Medium",
+      "price": 30000
+    },
+    {
+      "id": 2,
+      "productId": 1,
+      "title": "Large",
+      "price": 33000
+    },
+    {
+      "id": 3,
+      "productId": 2,
+      "title": "Medium",
+      "price": 60000
+    },
+    {
+      "id": 4,
+      "productId": 2,
+      "title": "Large",
+      "price": 66000
+    }
+  ],
+  "cartItems": [
+    {
+      "id": 1,
+      "userId": 2,
+      "optionId": 1,
+      "quantity": 2,
+      "orderId": -1
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "optionId": 2,
+      "quantity": 3,
+      "orderId": 1
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "userId": 2,
+      "orderTime": 1541501826042
+    }
+  ]
+}

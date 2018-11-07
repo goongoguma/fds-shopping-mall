@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>쇼핑몰!</title>
+  <link rel="stylesheet" href="./index.scss">
+</head>
+<body>
+  <!-- 로그인 템플릿 -->
+  <template id='login-form'>
+    <form class="login-form">
+      <input type="text" name="username">
+      <input type="password" name="password">
+      <button>Log in</button>
+    </form>
+  </template>
+
+  <!-- 상품목록 템플릿 -->
+  <template id='products-list'>
+    <h1>Products</h1>
+    <ul class="products-list"></ul>
+  </template>
+
+  <template id='products'>
+    <li class="product"></li>
+  </template>
+
+  <!-- 상품정보 템플릿 -->
+  <template id='products-info'>
+
+  </template>
+
+  <!-- 장바구니 템플릿 -->
+  <template id='cart'>
+
+  </template>
+
+  <!-- 주문내역 템플릿 -->
+  <template id='order-list'>
+
+  </template>
+
+  
+  <div class="root"></div>
+  <script src="./index.js"></script>
+</body>
+</html>
