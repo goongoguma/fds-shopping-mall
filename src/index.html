@@ -18,18 +18,23 @@
   </template>
 
   <!-- 상품목록 템플릿 -->
-  <template id='products-list'>
+  <template id='products-ul'>
     <h1>Products</h1>
+    <div class="hello">abcd</div>
     <ul class="products-list"></ul>
   </template>
 
-  <template id='products'>
-    <li class="product"></li>
+  <!-- 상품내용 -->
+  <template id='products-li'>
+    <li class="productsLiEl">
+      <img src="https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Flaptop1.png?1541557383008" class='image'>
+      <span class='name'></span>
+    </li>
   </template>
 
   <!-- 상품정보 템플릿 -->
   <template id='products-info'>
-
+    <img class="infoEl">
   </template>
 
   <!-- 장바구니 템플릿 -->
@@ -42,7 +47,7 @@
 
   </template>
 
-  
+
   <div class="root"></div>
   <script src="./index.js"></script>
 </body>

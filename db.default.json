@@ -13,7 +13,7 @@
     {
       "id": 1,
       "category": "Laptop",
-      "title": "Asus",
+      "title": "ASUS",
       "description": "노트북 할인",
       "mainImgUrl": "https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Flaptop1.png?1541557383008",
       "detailImgUrls": ["https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Flaptop1detail.jpg?1541557620590"]
@@ -21,36 +21,66 @@
     {
       "id": 2,
       "category": "Tablet",
-      "title": "Samsung",
+      "title": "SAMSUNG",
       "description": "타블릿",
       "mainImgUrl": "https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2F61UeUwwxEsL._SL1500_.jpg?1541557528476",
       "detailImgUrls": ["https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Ftablet.jpg?1541557573912"]
+    },
+    {
+      "id": 3,
+      "category": "Playstation4",
+      "title": "SONY",
+      "description": "게임기",
+      "mainImgUrl": "https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Fps4.jpeg?1541573169971",
+      "detailImgUrls": ["https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Fps4detail.jpg?1541573437652"]
+    },
+    {
+      "id": 4,
+      "category": "Nintendo Switch",
+      "title": "NINTENDO",
+      "description": "게임기",
+      "mainImgUrl": "https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Fswitch.jpg?1541573170892",
+      "detailImgUrls": ["https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Fswitchdetail.jpg?1541573435617"]
+    },
+    {
+      "id": 5,
+      "category": "iphone",
+      "title": "APPLE",
+      "description": "핸드폰",
+      "mainImgUrl": "https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Fiphone.jpg?1541573450001",
+      "detailImgUrls": ["https://cdn.glitch.com/5446e3e5-67ca-4321-a71d-d37e0c3a74ce%2Fiphone-6-plus-321.jpg?1541573446778"]
     }
   ],
   "options": [
     {
       "id": 1,
       "productId": 1,
-      "title": "Medium",
-      "price": 30000
+      "title": "Black",
+      "price": 800000
     },
     {
       "id": 2,
       "productId": 1,
-      "title": "Large",
-      "price": 33000
+      "title": "Silver",
+      "price": 200000
     },
     {
       "id": 3,
       "productId": 2,
-      "title": "Medium",
-      "price": 60000
+      "title": "Pro",
+      "price": 450000
     },
     {
       "id": 4,
       "productId": 2,
-      "title": "Large",
-      "price": 66000
+      "title": "NeonRed",
+      "price": 250000
+    },
+    {
+      "id": 5,
+      "productId": 3,
+      "title": "iphone8",
+      "price": 900000
     }
   ],
   "cartItems": [
