@@ -26,7 +26,8 @@ const templates = {
   loginForm: document.querySelector("#login-form").content,
   productsUl: document.querySelector("#products-ul").content,
   productsLi: document.querySelector("#products-li").content,
-  productsInfo: document.querySelector("#products-info").content
+  productsInfo: document.querySelector("#products-info").content,
+  description: document.querySelector("#description").content
 };
 
 const rootEl = document.querySelector(".root");
@@ -61,12 +62,11 @@ async function drawLoginForm() {
 }
 drawLoginForm();
 
-/*************************** 메인화면 상품 ***************************/
+/*************************** 메인 카테고리 ***************************/
 async function drawProductsList() {
   const res = await api.get("/products");
   const list = res.data;
 
-  // 페이지 그리는 함수 작성 순서
   const frag = document.importNode(templates.productsUl, true);
   const productsListEl = frag.querySelector(".products-list");
   const homeEl = frag.querySelector(".home-button");
@@ -74,18 +74,16 @@ async function drawProductsList() {
   const tabletEl = frag.querySelector(".tablet");
   const consoleEl = frag.querySelector(".console-game");
   const phoneEl = frag.querySelector(".phone");
-  const categoryList = frag.querySelector('.category-list')
-  homeEl.addEventListener('click', e => {
-    rootEl.textContent='';
+  const categoryList = frag.querySelector(".category-list");
+  homeEl.addEventListener("click", e => {
+    rootEl.textContent = "";
+    drawLoginForm();
     drawProductsList();
-  })
-  /******** Laptop 페이지 ********/
-  // 페이지 그리는 함수 작성 순서
-  // 1. 템플릿 복사
+  });
 
+  /******** 메인 상품페이지 ********/
   async function drawCategory(category) {
     const res = await api.get(`/products?category=${category}`);
-    // res.data[0].mainImgUrl
     productsListEl.textContent = "";
     for (let i = 0; i < res.data.length; i++) {
       const frag = document.importNode(templates.productsLi, true);
@@ -96,10 +94,11 @@ async function drawProductsList() {
       productsLiEl.appendChild(imageEl);
       productsListEl.appendChild(frag);
 
+      // 메인 상품을 클릭하면 세부상품 목록이 나옴
       productsLiEl.addEventListener("click", e => {
         information(res.data[i].id);
         productsListEl.textContent = "";
-        categoryList.textContent = '';
+        categoryList.textContent = "";
       });
     }
   }
@@ -122,30 +121,49 @@ async function drawProductsList() {
 
 drawProductsList();
 
-/*************************** 세부화면 상품 ***************************/
+/*************************** 세부 상품화면  ***************************/
 async function information(liId) {
-  const res = await api.get("/products");
-  const list = res.data;
-
   // 페이지 그리는 함수 작성 순서
+
   // 1. 템플릿 복사
   const frag = document.importNode(templates.productsInfo, true);
   // 2. 요소 선택
-  const infoEl = frag.querySelector('.infoEl');
+  const infoEl = frag.querySelector(".infoEl");
   const homeEl = frag.querySelector(".home-button");
-  homeEl.addEventListener('click', e => {
-    rootEl.textContent='';
-    drawProductsList();
-  })
 
+  homeEl.addEventListener("click", e => {
+    rootEl.textContent = "";
+    drawLoginForm();
+    drawProductsList();
+  });
 
   // 3. 필요한 데이터 불러오기
   // 4. 내용 채우기
-  if(liId) {
+  if (liId) {
     const res = await api.get(`/products/${liId}/`);
-    const detailImgUrls = res.data.detailImgUrls
-    infoEl.setAttribute('src', detailImgUrls[0]);
+    const detailImgUrls = res.data.detailImgUrls;
+    infoEl.setAttribute("src", detailImgUrls[0]);
+    description(liId);
   }
+  // 5. 이벤트 리스너 등록하기
+  // 6. 템플릿을 문서에 삽입
+  rootEl.appendChild(frag);
+}
+
+/*************************** 상품 정보 ***************************/
+async function description(liId) {
+  const res = await api.get(`/options?id=${liId}`);
+  // 1. 템플릿 복사
+  const frag = document.importNode(templates.description, true);
+  // 2. 요소 선택
+  const descriptionEl = frag.querySelector(".description");
+  const priceEl = frag.querySelector(".price");
+  // 3. 필요한 데이터 불러오기
+  descriptionEl.textContent = res.data[0].title;
+  priceEl.textContent = res.data[0].price;
+  // 4. 내용 채우기
+  frag.appendChild(descriptionEl);
+  frag.appendChild(priceEl);
   // 5. 이벤트 리스너 등록하기
   // 6. 템플릿을 문서에 삽입
   rootEl.appendChild(frag);
