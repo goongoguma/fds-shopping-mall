@@ -1,5 +1,19 @@
-$main-color: whitesmoke;
+$main-color: #fff;
 
 body {
   background-color: $main-color;
+}
+.productsLiEl {
+  width: 300px;
+  display: inline-block;
+  margin-bottom: 30px;
+
+  &:not(:nth-child(4n)) {
+    margin-right: 70px;
+
+  }
+}
+
+.not {
+  display: none;
 }
