@@ -27,7 +27,9 @@ const templates = {
   productsUl: document.querySelector("#products-ul").content,
   productsLi: document.querySelector("#products-li").content,
   productsInfo: document.querySelector("#products-info").content,
-  description: document.querySelector("#description").content
+  description: document.querySelector("#description").content,
+  cart: document.querySelector("#cart").content,
+  orderList: document.querySelector('#order-list').content
 };
 
 const rootEl = document.querySelector(".root");
@@ -49,7 +51,6 @@ async function drawLoginForm() {
       username,
       password
     });
-    console.log(res);
     if (res.status === 200) {
       alert("환영합니다.");
       rootEl.textContent = "";
@@ -61,13 +62,11 @@ async function drawLoginForm() {
 
   rootEl.appendChild(frag);
 }
-drawLoginForm();
 
 /*************************** 메인 카테고리 ***************************/
 async function drawProductsList() {
   const res = await api.get("/products");
   const list = res.data;
-
   const frag = document.importNode(templates.productsUl, true);
   const productsListEl = frag.querySelector(".products-list");
   const homeEl = frag.querySelector(".home-button");
@@ -85,15 +84,23 @@ async function drawProductsList() {
   /******** 메인 상품페이지 ********/
   async function drawCategory(category) {
     const res = await api.get(`/products?category=${category}`);
+
+    //  productsListEl.textContent = "";이 아니면 전상품의 이미지가 없어지지 않는다.
     productsListEl.textContent = "";
+
+    // 데이터 안에 필요한 메인 타이틀과 이미지를 구하기 위해 for문을 사용한다.
     for (let i = 0; i < res.data.length; i++) {
       const frag = document.importNode(templates.productsLi, true);
       const productsLiEl = frag.querySelector(".productsLiEl");
       const imageEl = frag.querySelector(".image");
-      const productsTitle = frag.querySelector('.title');
+      const productsTitle = frag.querySelector(".title");
+
+      // imageEl의 src 속성을 res.data[i].mainImgUrl로 만든다.
+      // imageEl.setAttribute("src", res.data[i].mainImgUrl)과 같다
       imageEl.src = res.data[i].mainImgUrl;
       productsTitle.textContent = res.data[i].title;
-      // console.log(res.data[i].id)
+
+      // 메인 이미지와 상품의 타이틀을 productsLiEl에 붙여준 뒤에 frag에 붙여준다.
       productsLiEl.appendChild(imageEl);
       productsLiEl.appendChild(productsTitle);
       productsListEl.appendChild(frag);
@@ -119,11 +126,9 @@ async function drawProductsList() {
   phoneEl.addEventListener("click", e => {
     drawCategory("Phone");
   });
-
+  rootEl.textContent = "";
   rootEl.appendChild(frag);
 }
-
-
 
 /*************************** 세부 상품화면  ***************************/
 async function drawInformation(liId) {
@@ -131,10 +136,10 @@ async function drawInformation(liId) {
 
   // 1. 템플릿 복사
   const frag = document.importNode(templates.productsInfo, true);
+
   // 2. 요소 선택
   const infoEl = frag.querySelector(".infoEl");
   const homeEl = frag.querySelector(".home-button");
-
   homeEl.addEventListener("click", e => {
     rootEl.textContent = "";
     drawProductsList();
@@ -150,33 +155,96 @@ async function drawInformation(liId) {
   }
   // 5. 이벤트 리스너 등록하기
   // 6. 템플릿을 문서에 삽입
+  rootEl.textContent = "";
   rootEl.appendChild(frag);
 }
 
 /*************************** 상품 정보 ***************************/
 async function drawDescription(liId) {
   const res = await api.get(`/options?id=${liId}`);
+  console.log(res.data[0].id)
+
   // 1. 템플릿 복사
   const frag = document.importNode(templates.description, true);
+
   // 2. 요소 선택
   const descriptionEl = frag.querySelector(".description");
   const priceEl = frag.querySelector(".price");
+  const cartBtnEl = frag.querySelector('.cart-btn');
+  const inputNumEl = frag.querySelector(".input-num");
+
   // 3. 필요한 데이터 불러오기
   descriptionEl.textContent = res.data[0].title;
+  res.data[0].title;
+
   // 4. 내용 채우기
   frag.appendChild(descriptionEl);
   frag.appendChild(priceEl);
+  
   // 5. 이벤트 리스너 등록하기
-  // 6. 템플릿을 문서에 삽입
+  inputNumEl.addEventListener("input", e => {
 
-  // 수량 증가 및 감소
-  const inputNumEl = frag.querySelector('.input-num');
-  inputNumEl.addEventListener('input', e => {
-    // console.log(e.target.value)
-    priceEl.textContent = '가격' + ' '+ ':'+ ' ' + e.target.value * res.data[0].price + ' ' + 'Gold';
-
+    priceEl.textContent = e.target.value * res.data[0].price;
+    e.target.value * res.data[0].price;
+    e.target.value;
+    
+    console.log(typeof res.data[0].id);
+   
+  });
+  
+  // 장바구니 버튼을 클릭하면 정보 보내기
+  cartBtnEl.addEventListener('click', async e => {
+    e.preventDefault();
+    await api.post('/cartItems', {
+      optionId: res.data[0].id, // 옵션은 내가 채워야 할 정보
+      quantity: parseInt(inputNumEl.value), // 수량은 내가 채워야 할 정보
+      ordered:  false,// 주문되지 않았다는 사실을 나타냄
+    })
+    drawCart();
   })
 
+  // 6. 템플릿을 문서에 삽입
+  // 수량 증가 및 감소
   rootEl.appendChild(frag);
+}
 
+/*************************** 장바구니 ***************************/
+async function drawCart() {
+  // 1. 템플릿 복사
+  const frag = document.importNode(templates.cart, true);
+    
+  // 2. 요소 선택
+  const cartDesc = frag.querySelector('.cart-name');
+  const cartQuan = frag.querySelector('.cart-quantity');
+  const cartPrice = frag.querySelector('.cart-price');
+  const order = frag.querySelector('.order');
+    
+  // 3. 필요한 데이터 불러오기
+  const res = await api.get(`/cartItems?_expand=option`);
+  
+  // 4. 내용 채우기
+  for(let i = 0; i < res.data.length; i++) {
+   cartPrice.textContent = res.data[i].quantity * res.data[i].option.price;
+   cartQuan.textContent = res.data[i].quantity;
+   cartDesc.textContent = res.data[i].option.title;
+  }
+  
+  order.addEventListener('click', e => {
+    alert('주문이 완료되었습니다.');
+    rootEl.textContent = "";
+    drawProductsList();
+  })
+  
+  // 5. 이벤트 리스너 등록하기
+  // 6. 템플릿을 문서에 삽입
+  rootEl.textContent = "";
+  rootEl.appendChild(frag2);
+}
+
+/*************************** 로그인 분기처리 ***************************/
+// 토큰이 존재하는 이상 로그인이 풀리지 않는다.
+if (localStorage.getItem("token")) {
+  drawProductsList();
+} else {
+  drawLoginForm();
 }
