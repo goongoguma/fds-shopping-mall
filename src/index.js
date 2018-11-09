@@ -53,6 +53,7 @@ async function drawLoginForm() {
     if (res.status === 200) {
       alert("환영합니다.");
       rootEl.textContent = "";
+      drawProductsList();
     }
     localStorage.setItem("token", res.data.token);
   });
@@ -74,10 +75,10 @@ async function drawProductsList() {
   const tabletEl = frag.querySelector(".tablet");
   const consoleEl = frag.querySelector(".console-game");
   const phoneEl = frag.querySelector(".phone");
+
   const categoryList = frag.querySelector(".category-list");
   homeEl.addEventListener("click", e => {
     rootEl.textContent = "";
-    drawLoginForm();
     drawProductsList();
   });
 
@@ -89,14 +90,17 @@ async function drawProductsList() {
       const frag = document.importNode(templates.productsLi, true);
       const productsLiEl = frag.querySelector(".productsLiEl");
       const imageEl = frag.querySelector(".image");
+      const productsTitle = frag.querySelector('.title');
       imageEl.src = res.data[i].mainImgUrl;
+      productsTitle.textContent = res.data[i].title;
       // console.log(res.data[i].id)
       productsLiEl.appendChild(imageEl);
+      productsLiEl.appendChild(productsTitle);
       productsListEl.appendChild(frag);
 
       // 메인 상품을 클릭하면 세부상품 목록이 나옴
       productsLiEl.addEventListener("click", e => {
-        information(res.data[i].id);
+        drawInformation(res.data[i].id);
         productsListEl.textContent = "";
         categoryList.textContent = "";
       });
@@ -119,10 +123,10 @@ async function drawProductsList() {
   rootEl.appendChild(frag);
 }
 
-drawProductsList();
+
 
 /*************************** 세부 상품화면  ***************************/
-async function information(liId) {
+async function drawInformation(liId) {
   // 페이지 그리는 함수 작성 순서
 
   // 1. 템플릿 복사
@@ -133,7 +137,6 @@ async function information(liId) {
 
   homeEl.addEventListener("click", e => {
     rootEl.textContent = "";
-    drawLoginForm();
     drawProductsList();
   });
 
@@ -143,7 +146,7 @@ async function information(liId) {
     const res = await api.get(`/products/${liId}/`);
     const detailImgUrls = res.data.detailImgUrls;
     infoEl.setAttribute("src", detailImgUrls[0]);
-    description(liId);
+    drawDescription(liId);
   }
   // 5. 이벤트 리스너 등록하기
   // 6. 템플릿을 문서에 삽입
@@ -151,7 +154,7 @@ async function information(liId) {
 }
 
 /*************************** 상품 정보 ***************************/
-async function description(liId) {
+async function drawDescription(liId) {
   const res = await api.get(`/options?id=${liId}`);
   // 1. 템플릿 복사
   const frag = document.importNode(templates.description, true);
@@ -160,11 +163,20 @@ async function description(liId) {
   const priceEl = frag.querySelector(".price");
   // 3. 필요한 데이터 불러오기
   descriptionEl.textContent = res.data[0].title;
-  priceEl.textContent = res.data[0].price;
   // 4. 내용 채우기
   frag.appendChild(descriptionEl);
   frag.appendChild(priceEl);
   // 5. 이벤트 리스너 등록하기
   // 6. 템플릿을 문서에 삽입
+
+  // 수량 증가 및 감소
+  const inputNumEl = frag.querySelector('.input-num');
+  inputNumEl.addEventListener('input', e => {
+    // console.log(e.target.value)
+    priceEl.textContent = '가격' + ' '+ ':'+ ' ' + e.target.value * res.data[0].price + ' ' + 'Gold';
+
+  })
+
   rootEl.appendChild(frag);
+
 }

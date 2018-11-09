@@ -38,6 +38,7 @@
   <template id='products-li'>
     <li class="productsLiEl">
       <img class='image'>
+      <div class="title"></div>
     </li>
   </template>
 
@@ -48,8 +49,11 @@
   </template>
 
   <template id='description'>
-    <p class="description"></p>
-    <p class="price"></p>
+    <div class="description"></div>
+    <div class="price"></div>
+    <form class="form-num" name="form-num">
+      수량 : <input type="number" class="input-num" placeholder="0">
+    </form>
   </template>
 
   <!-- 장바구니 템플릿 -->
