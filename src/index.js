@@ -28,8 +28,8 @@ const templates = {
   productsLi: document.querySelector("#products-li").content,
   productsInfo: document.querySelector("#products-info").content,
   description: document.querySelector("#description").content,
-  cart: document.querySelector("#cart").content,
-  orderList: document.querySelector('#order-list').content
+  cartUl: document.querySelector('#ordered-list').content,
+  cartLi: document.querySelector("#cart-list").content
 };
 
 const rootEl = document.querySelector(".root");
@@ -162,7 +162,7 @@ async function drawInformation(liId) {
 /*************************** 상품 정보 ***************************/
 async function drawDescription(liId) {
   const res = await api.get(`/options?id=${liId}`);
-  console.log(res.data[0].id)
+  console.log(res.data[0].id);
 
   // 1. 템플릿 복사
   const frag = document.importNode(templates.description, true);
@@ -170,7 +170,7 @@ async function drawDescription(liId) {
   // 2. 요소 선택
   const descriptionEl = frag.querySelector(".description");
   const priceEl = frag.querySelector(".price");
-  const cartBtnEl = frag.querySelector('.cart-btn');
+  const cartBtnEl = frag.querySelector(".cart-btn");
   const inputNumEl = frag.querySelector(".input-num");
 
   // 3. 필요한 데이터 불러오기
@@ -180,28 +180,26 @@ async function drawDescription(liId) {
   // 4. 내용 채우기
   frag.appendChild(descriptionEl);
   frag.appendChild(priceEl);
-  
+
   // 5. 이벤트 리스너 등록하기
   inputNumEl.addEventListener("input", e => {
-
     priceEl.textContent = e.target.value * res.data[0].price;
     e.target.value * res.data[0].price;
     e.target.value;
-    
+
     console.log(typeof res.data[0].id);
-   
   });
-  
+
   // 장바구니 버튼을 클릭하면 정보 보내기
-  cartBtnEl.addEventListener('click', async e => {
+  cartBtnEl.addEventListener("click", async e => {
     e.preventDefault();
-    await api.post('/cartItems', {
+    await api.post("/cartItems", {
       optionId: res.data[0].id, // 옵션은 내가 채워야 할 정보
       quantity: parseInt(inputNumEl.value), // 수량은 내가 채워야 할 정보
-      ordered:  false,// 주문되지 않았다는 사실을 나타냄
-    })
-    drawCart();
-  })
+      ordered: false // 주문되지 않았다는 사실을 나타냄
+    });
+    drawCartList();
+  });
 
   // 6. 템플릿을 문서에 삽입
   // 수량 증가 및 감소
@@ -209,37 +207,46 @@ async function drawDescription(liId) {
 }
 
 /*************************** 장바구니 ***************************/
-async function drawCart() {
+async function drawCartList() {
   // 1. 템플릿 복사
-  const frag = document.importNode(templates.cart, true);
-    
+  const frag = document.importNode(templates.cartUl, true);
   // 2. 요소 선택
-  const cartDesc = frag.querySelector('.cart-name');
-  const cartQuan = frag.querySelector('.cart-quantity');
-  const cartPrice = frag.querySelector('.cart-price');
-  const order = frag.querySelector('.order');
-    
+  const cartUl = frag.querySelector('.ordered-list')
+  // const productsListEl = frag.querySelector(".products-list");
+  
+
   // 3. 필요한 데이터 불러오기
   const res = await api.get(`/cartItems?_expand=option`);
-  
+
   // 4. 내용 채우기
-  for(let i = 0; i < res.data.length; i++) {
-   cartPrice.textContent = res.data[i].quantity * res.data[i].option.price;
-   cartQuan.textContent = res.data[i].quantity;
-   cartDesc.textContent = res.data[i].option.title;
+  for (let i = 0; i < res.data.length; i++) {
+    const frag2 = document.importNode(templates.cartLi, true)
+    
+    const cartList = frag2.querySelector('.cart-list');
+    const cartDesc = frag2.querySelector(".cart-name");
+    const cartQuan = frag2.querySelector(".cart-quantity");
+    const cartPrice = frag2.querySelector(".cart-price");
+    
+
+    cartPrice.textContent = res.data[i].quantity * res.data[i].option.price;
+    cartQuan.textContent = res.data[i].quantity;
+    cartDesc.textContent = res.data[i].option.title;
+    console.log(cartUl)
+    cartUl.appendChild(frag2)
+    
   }
+  rootEl.textContent = "";
+  rootEl.appendChild(frag);
+    
   
-  order.addEventListener('click', e => {
-    alert('주문이 완료되었습니다.');
-    rootEl.textContent = "";
-    drawProductsList();
-  })
   
   // 5. 이벤트 리스너 등록하기
   // 6. 템플릿을 문서에 삽입
-  rootEl.textContent = "";
-  rootEl.appendChild(frag2);
+  
+  
 }
+
+
 
 /*************************** 로그인 분기처리 ***************************/
 // 토큰이 존재하는 이상 로그인이 풀리지 않는다.

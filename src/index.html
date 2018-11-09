@@ -19,7 +19,7 @@
     <!-- 상품목록 템플릿 -->
     <template id="products-ul">
       <h1>Products</h1>
-      <div class="hello">쇼핑모올</div>
+      <div class="hello">쇼핑몰</div>
       <ul class="category-list">
         <button class="home-button">홈으로</button>
         <li class="laptop">Laptop</li>
@@ -41,8 +41,7 @@
 
     <!-- 상품정보 템플릿 -->
     <template id="products-info">
-      <button class="home-button">홈으로</button>
-      <img class="infoEl" />
+      <button class="home-button">홈으로</button> <img class="infoEl" />
     </template>
 
     <!-- 상품설명 템플릿 -->
@@ -50,22 +49,32 @@
       <div class="description"></div>
       <div class="price">0</div>
       <form class="form-num" name="form-num">
-        수량 : <input type="number" class="input-num" value="0"/>
+        수량 : <input type="number" class="input-num" value="0" />
         <button class="cart-btn">장바구니</button>
       </form>
     </template>
 
-    <!-- 장바구니 템플릿 -->
-    <template id="cart">
-      <p>제품명 :</p><div class="cart-name"></div>
-      <p>수량 :</p><div class="cart-quantity"></div>
-      <p>가격 :</p><div class="cart-price"></div>
-      <button class="order">주문</button>
-      <button class="remove">제거</button>
+    <!-- 장바구니 목록 -->
+    <template id="ordered-list">
+        <ul class="ordered-list"></ul>
     </template>
 
-    <!-- 주문내역 템플릿 -->
-    <template id="order-list"> </template>
+    <!-- 장바구니 리스트 템플릿 -->
+    <template id="cart-list">
+      <li class="cart-list">
+      <p>제품 : </p><div class="cart-name"></div>
+      <p>수량 : </p><div class="cart-quantity"></div>
+      <p>가격 : </p><div class="cart-price"></div>
+      <button class="purchase">구입</button>
+      <button class="remove">제거</button>
+      </li>
+    </template>
+
+    
+    <!--
+      주문내역 템플릿
+      <template id="order-list"></template>
+    -->
 
     <div class="root"></div>
     <script src="./index.js"></script>
