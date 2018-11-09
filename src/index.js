@@ -8,6 +8,7 @@ import "@babel/polyfill"; // 이 라인을 지우지 말아주세요!
 // 6. 템플릿을 문서에 삽입
 
 import axios from "axios";
+import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from "constants";
 
 const api = axios.create({
   baseURL: process.env.API_URL
@@ -28,7 +29,7 @@ const templates = {
   productsLi: document.querySelector("#products-li").content,
   productsInfo: document.querySelector("#products-info").content,
   description: document.querySelector("#description").content,
-  cartUl: document.querySelector('#ordered-list').content,
+  cartUl: document.querySelector("#ordered-list").content,
   cartLi: document.querySelector("#cart-list").content
 };
 
@@ -74,6 +75,7 @@ async function drawProductsList() {
   const tabletEl = frag.querySelector(".tablet");
   const consoleEl = frag.querySelector(".console-game");
   const phoneEl = frag.querySelector(".phone");
+  const cartEl = frag.querySelector('.cart-list');
 
   const categoryList = frag.querySelector(".category-list");
   homeEl.addEventListener("click", e => {
@@ -81,6 +83,10 @@ async function drawProductsList() {
     drawProductsList();
   });
 
+  cartEl.addEventListener('click', e => {
+    rootEl.textContent='';
+    drawCartList();
+  })
   /******** 메인 상품페이지 ********/
   async function drawCategory(category) {
     const res = await api.get(`/products?category=${category}`);
@@ -162,7 +168,6 @@ async function drawInformation(liId) {
 /*************************** 상품 정보 ***************************/
 async function drawDescription(liId) {
   const res = await api.get(`/options?id=${liId}`);
-  console.log(res.data[0].id);
 
   // 1. 템플릿 복사
   const frag = document.importNode(templates.description, true);
@@ -186,8 +191,6 @@ async function drawDescription(liId) {
     priceEl.textContent = e.target.value * res.data[0].price;
     e.target.value * res.data[0].price;
     e.target.value;
-
-    console.log(typeof res.data[0].id);
   });
 
   // 장바구니 버튼을 클릭하면 정보 보내기
@@ -210,43 +213,82 @@ async function drawDescription(liId) {
 async function drawCartList() {
   // 1. 템플릿 복사
   const frag = document.importNode(templates.cartUl, true);
+
   // 2. 요소 선택
-  const cartUl = frag.querySelector('.ordered-list')
-  // const productsListEl = frag.querySelector(".products-list");
-  
+  const cartUl = frag.querySelector(".ordered-list");
+  const purchaseAll = frag.querySelector(".purchase-all");
+  const removeAll = frag.querySelector(".remove-all");
+  const homeBtn = frag.querySelector(".home-btn");
 
   // 3. 필요한 데이터 불러오기
   const res = await api.get(`/cartItems?_expand=option`);
 
   // 4. 내용 채우기
   for (let i = 0; i < res.data.length; i++) {
-    const frag2 = document.importNode(templates.cartLi, true)
-    
-    const cartList = frag2.querySelector('.cart-list');
+    const frag2 = document.importNode(templates.cartLi, true);
     const cartDesc = frag2.querySelector(".cart-name");
     const cartQuan = frag2.querySelector(".cart-quantity");
     const cartPrice = frag2.querySelector(".cart-price");
-    
+    const purchaseBtn = frag2.querySelector(".purchase");
+    const removeBtn = frag2.querySelector(".remove");
 
+    // 받아온 데이터로 textContent 지정해주기
     cartPrice.textContent = res.data[i].quantity * res.data[i].option.price;
     cartQuan.textContent = res.data[i].quantity;
     cartDesc.textContent = res.data[i].option.title;
-    console.log(cartUl)
-    cartUl.appendChild(frag2)
-    
+
+    // li를 ul에 계속해서 붙여준다.
+    cartUl.appendChild(frag2);
+
+    // 구입버튼 함수
+    purchaseBtn.addEventListener('click', async e => {
+      const {
+        data: { id: orderId }
+      } = await api.post("/orders", {
+        orderTime: Date.now() // 현재 시각을 나타내는 정수
+      });
+      await api.patch(`/cartItems/${res.data[i].id}`, {
+        ordered: true,
+        orderId
+      });
+      alert('구입완료')
+    })
+
+    purchaseAll.addEventListener('click', async e => {
+      for(let i = 0; i < 1; i++) {
+        if(res.data[i].ordered === true) {
+          res.data[i].option.title
+        }
+      }
+      alert(res.data[i].option.title)
+    })
+
+
+
+    // 삭제버튼 함수
+    removeBtn.addEventListener("click", async e => {
+      alert("삭제되었습니다.");
+      await api.delete(`/cartItems/${res.data[i].id}`);
+      drawCartList();
+    });
   }
-  rootEl.textContent = "";
-  rootEl.appendChild(frag);
-    
-  
-  
   // 5. 이벤트 리스너 등록하기
+  removeAll.addEventListener("click", async e => {
+    alert("삭제되었습니다.");
+    for (let i = 0; i < res.data.length; i++) {
+      await api.delete(`/cartItems/${res.data[i].id}`);
+      drawCartList();
+    }
+  });
+  homeBtn.addEventListener("click", e => {
+    rootEl.textContent = "";
+    drawProductsList();
+  });
   // 6. 템플릿을 문서에 삽입
-  
-  
+  rootEl.textContent = "";
+  // ul을 root에다 붙여준다.
+  rootEl.appendChild(frag);
 }
-
-
 
 /*************************** 로그인 분기처리 ***************************/
 // 토큰이 존재하는 이상 로그인이 풀리지 않는다.
