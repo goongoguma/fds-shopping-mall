@@ -261,6 +261,7 @@ async function drawCartList() {
         }
       }
       alert(res.data[i].option.title)
+      drawProductsList();
     })
 
 
