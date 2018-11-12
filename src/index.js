@@ -264,8 +264,6 @@ async function drawCartList() {
       drawProductsList();
     })
 
-
-
     // 삭제버튼 함수
     removeBtn.addEventListener("click", async e => {
       alert("삭제되었습니다.");
